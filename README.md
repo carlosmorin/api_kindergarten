@@ -6,4 +6,4 @@ To install this proyect run the following commands
   * rails db:create
   * rails db:migrate
   * rails db:seed
-  * rarils server
+  * rails server
