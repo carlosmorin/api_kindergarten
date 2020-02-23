@@ -10,16 +10,54 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_21_073129) do
+ActiveRecord::Schema.define(version: 2020_02_23_201404) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "activities", force: :cascade do |t|
     t.string "name"
-    t.text "description"
+    t.string "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "activity_logs", force: :cascade do |t|
+    t.bigint "baby_id", null: false
+    t.bigint "assistant_id", null: false
+    t.bigint "activity_id", null: false
+    t.datetime "start_time"
+    t.datetime "stop_time"
+    t.integer "duration"
+    t.string "comments"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["activity_id"], name: "index_activity_logs_on_activity_id"
+    t.index ["assistant_id"], name: "index_activity_logs_on_assistant_id"
+    t.index ["baby_id"], name: "index_activity_logs_on_baby_id"
+  end
+
+  create_table "assistants", force: :cascade do |t|
+    t.string "name"
+    t.string "group"
+    t.string "address"
+    t.string "phone"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "babies", force: :cascade do |t|
+    t.string "name"
+    t.datetime "birthday"
+    t.string "mother_name"
+    t.string "father_name"
+    t.string "address"
+    t.string "phone"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  add_foreign_key "activity_logs", "activities"
+  add_foreign_key "activity_logs", "assistants"
+  add_foreign_key "activity_logs", "babies"
 end
