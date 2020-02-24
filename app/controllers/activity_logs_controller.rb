@@ -3,8 +3,21 @@ class ActivityLogsController < ApplicationController
 
   # GET /activity_logs
   def index
-    @activity_logs = ActivityLog.all
-
+    @activity_logs = ActivityLog.joins(:baby, :assistant, :activity)
+                      .select(
+                        "activity_logs.id, 
+                        activity_logs.baby_id, 
+                        activity_logs.assistant_id,  
+                        babies.name as baby_name, 
+                        assistants.name as assistant_name,
+                        activities.name as activity_name,
+                        activity_logs.start_time as start_time,
+                        activity_logs.stop_time as stop_time,
+                        activity_logs.duration as duration")
+                      .order("activity_logs.start_time DESC")
+    filter_by_baby if params[:baby_id].present?
+    filter_by_assistant if params[:assistant_id].present?
+    filter_by_status if params[:status].present?
     render json: @activity_logs
   end
 
@@ -42,6 +55,25 @@ class ActivityLogsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_activity_log
       @activity_log = ActivityLog.find(params[:id])
+    end
+    
+    def filter_by_baby
+      baby_id = Regexp.escape(params[:baby_id])
+      @activity_logs = @activity_logs.where("activity_logs.baby_id = ? ", baby_id)
+    end
+
+    def filter_by_assistant
+      assistant_id = Regexp.escape(params[:assistant_id])
+      @activity_logs = @activity_logs.where("activity_logs.assistant_id = ? ", assistant_id)
+    end
+
+    def filter_by_status
+      @activity_logs = filters
+    end
+
+    def filters
+      return @activity_logs.finished if params[:status] == "finished"
+      return @activity_logs.in_progress if params[:status] == "in_progress"
     end
 
     # Only allow a trusted parameter "white list" through.
