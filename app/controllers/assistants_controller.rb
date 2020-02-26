@@ -5,7 +5,7 @@ class AssistantsController < ApplicationController
   def index
     @assistants = Assistant.all
 
-    render json: @assistants
+    paginate @assistants, per_page: 13
   end
 
   # GET /assistants/1
