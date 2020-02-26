@@ -5,6 +5,7 @@ class AssistantsController < ApplicationController
   def index
     @assistants = Assistant.all
 
+    search if params[:search].present?
     paginate @assistants, per_page: 13
   end
 
@@ -42,6 +43,13 @@ class AssistantsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_assistant
       @assistant = Assistant.find(params[:id])
+    end
+
+    def search
+      parameter = Regexp.escape(params[:search])
+      @assistants = @assistants.where("
+        CONCAT(name, ' ',phone, ' ', address) ~* ?", parameter
+      ) 
     end
 
     # Only allow a trusted parameter "white list" through.

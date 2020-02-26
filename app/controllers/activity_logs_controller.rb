@@ -5,9 +5,11 @@ class ActivityLogsController < ApplicationController
   def index
     @activity_logs = ActivityLog.joins(:baby, :assistant, :activity)
                       .select(columns_names).order("activity_logs.start_time DESC")
-    filter_by_baby if params[:baby_id].present?
-    filter_by_assistant if params[:assistant_id].present?
-    filter_by_status if params[:status].present?
+    
+    search_by_baby if params[:baby_id].present?
+    search_by_assistant if params[:assistant_id].present?
+    search_by_status if params[:status].present?
+
     paginate @activity_logs, per_page: 10
   end
 
@@ -60,22 +62,22 @@ class ActivityLogsController < ApplicationController
       @activity_log = ActivityLog.select(columns_names).joins(:baby, :assistant, :activity).find(params[:id])
     end
     
-    def filter_by_baby
+    def search_by_baby
       baby_id = Regexp.escape(params[:baby_id])
       @activity_logs = @activity_logs.where("activity_logs.baby_id = ? ", baby_id)
     end
 
-    def filter_by_assistant
+    def search_by_assistant
 
       assistant_id = Regexp.escape(params[:assistant_id])
       @activity_logs = @activity_logs.where("activity_logs.assistant_id = ? ", assistant_id)
     end
 
-    def filter_by_status
-      @activity_logs = filters
+    def search_by_status
+      @activity_logs = statuses_filter_options
     end
 
-    def filters
+    def statuses_filter_options
       return @activity_logs.finished if params[:status] == "finished"
       return @activity_logs.in_progress if params[:status] == "in_progress"
     end
