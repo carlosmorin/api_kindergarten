@@ -8,7 +8,7 @@ class ActivityLogsController < ApplicationController
     filter_by_baby if params[:baby_id].present?
     filter_by_assistant if params[:assistant_id].present?
     filter_by_status if params[:status].present?
-    paginate @activity_logs, per_page: 15
+    paginate @activity_logs, per_page: 10
   end
 
   # GET /activity_logs/1
