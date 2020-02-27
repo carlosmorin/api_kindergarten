@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   before_action :authenticate_request
 
   attr_reader :current_user
-  # helper_method :current_user
 
   private
 

@@ -7,12 +7,12 @@ gem 'rails', '~> 6.0.2', '>= 6.0.2.1'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 4.1'
 gem 'bootsnap', '>= 1.4.2', require: false
-gem 'rack-cors'
 gem 'will_paginate', '~> 3.2', '>= 3.2.1'
 gem 'pager_api'
 gem 'bcrypt'
 gem 'jwt'
 gem 'simple_command'
+gem 'rack-cors'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -20,6 +20,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'shoulda-matchers'
+  gem 'rubocop'
 end
 
 group :development do

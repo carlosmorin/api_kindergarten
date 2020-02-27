@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class BabiesController < ApplicationController
-  before_action :set_baby, only: [:show, :update, :destroy]
+  before_action :set_baby, only: %i[show update destroy]
 
   # GET /babies
   def index
@@ -44,13 +46,16 @@ class BabiesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_baby
-      @baby = Baby.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def baby_params
-      params.require(:baby).permit(:name, :birthday, :mother_name, :father_name, :address, :phone)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_baby
+    @baby = Baby.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def baby_params
+    params.require(:baby).permit(
+      :name, :birthday, :mother_name, :father_name, :address, :phone
+    )
+  end
 end

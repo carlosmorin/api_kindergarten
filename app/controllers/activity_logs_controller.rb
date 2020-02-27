@@ -1,11 +1,14 @@
+# frozen_string_literal: true
+
 class ActivityLogsController < ApplicationController
-  before_action :set_activity_log, only: [:show, :update, :destroy]
+  before_action :set_activity_log, only: %i[show update destroy]
 
   # GET /activity_logs
   def index
     @activity_logs = ActivityLog.joins(:baby, :assistant, :activity)
-                      .select(columns_names).order("activity_logs.start_time DESC")
-    
+                                .select(columns_names)
+                                .order('activity_logs.start_time DESC')
+
     search_by_baby if params[:baby_id].present?
     search_by_assistant if params[:assistant_id].present?
     search_by_status if params[:status].present?
@@ -45,45 +48,50 @@ class ActivityLogsController < ApplicationController
 
   private
 
-    def columns_names
-      "activity_logs.id, 
-      activity_logs.baby_id, 
-      activity_logs.comments, 
-      activity_logs.assistant_id,  
-      babies.name as baby_name, 
-      assistants.name as assistant_name,
-      activities.name as activity_name,
-      activity_logs.start_time as start_time,
-      activity_logs.stop_time as stop_time,
-      activity_logs.duration as duration"
-    end
-    # Use callbacks to share common setup or constraints between actions.
-    def set_activity_log
-      @activity_log = ActivityLog.select(columns_names).joins(:baby, :assistant, :activity).find(params[:id])
-    end
-    
-    def search_by_baby
-      baby_id = Regexp.escape(params[:baby_id])
-      @activity_logs = @activity_logs.where("activity_logs.baby_id = ? ", baby_id)
-    end
+  def columns_names
+    "activity_logs.id,
+    activity_logs.baby_id,
+    activity_logs.comments,
+    activity_logs.assistant_id,
+    babies.name as baby_name,
+    assistants.name as assistant_name,
+    activities.name as activity_name,
+    activity_logs.start_time as start_time,
+    activity_logs.stop_time as stop_time,
+    activity_logs.duration as duration"
+  end
 
-    def search_by_assistant
+  # Use callbacks to share common setup or constraints between actions.
+  def set_activity_log
+    @activity_log = ActivityLog.select(columns_names)
+                               .joins(:baby, :assistant, :activity)
+                               .find(params[:id])
+  end
 
-      assistant_id = Regexp.escape(params[:assistant_id])
-      @activity_logs = @activity_logs.where("activity_logs.assistant_id = ? ", assistant_id)
-    end
+  def search_by_baby
+    baby_id = Regexp.escape(params[:baby_id])
+    @activity_logs = @activity_logs.where('activity_logs.baby_id = ? ', baby_id)
+  end
 
-    def search_by_status
-      @activity_logs = statuses_filter_options
-    end
+  def search_by_assistant
+    assistant_id = Regexp.escape(params[:assistant_id])
+    @activity_logs = @activity_logs
+                     .where('activity_logs.assistant_id = ? ', assistant_id)
+  end
 
-    def statuses_filter_options
-      return @activity_logs.finished if params[:status] == "finished"
-      return @activity_logs.in_progress if params[:status] == "in_progress"
-    end
+  def search_by_status
+    @activity_logs = statuses_filter_options
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def activity_log_params
-      params.require(:activity_log).permit(:baby_id, :assistant_id, :activity_id, :start_time, :stop_time, :duration)
-    end
+  def statuses_filter_options
+    return @activity_logs.finished if params[:status] == 'finished'
+    return @activity_logs.in_progress if params[:status] == 'in_progress'
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def activity_log_params
+    params.require(:activity_log).permit(
+      :baby_id, :assistant_id, :activity_id, :start_time, :stop_time, :duration
+    )
+  end
 end

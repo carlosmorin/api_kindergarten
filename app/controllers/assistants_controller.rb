@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class AssistantsController < ApplicationController
-  before_action :set_assistant, only: [:show, :update, :destroy]
+  before_action :set_assistant, only: %i[show update destroy]
 
   # GET /assistants
   def index
@@ -40,20 +42,20 @@ class AssistantsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_assistant
-      @assistant = Assistant.find(params[:id])
-    end
 
-    def search
-      parameter = Regexp.escape(params[:search])
-      @assistants = @assistants.where("
-        CONCAT(name, ' ',phone, ' ', address) ~* ?", parameter
-      ) 
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_assistant
+    @assistant = Assistant.find(params[:id])
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def assistant_params
-      params.require(:assistant).permit(:name, :group)
-    end
+  def search
+    parameter = Regexp.escape(params[:search])
+    @assistants = @assistants.where("
+      CONCAT(name, ' ',phone, ' ', address) ~* ?", parameter)
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def assistant_params
+    params.require(:assistant).permit(:name, :group)
+  end
 end
