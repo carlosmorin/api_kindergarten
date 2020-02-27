@@ -10,7 +10,9 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'rack-cors'
 gem 'will_paginate', '~> 3.2', '>= 3.2.1'
 gem 'pager_api'
-
+gem 'bcrypt'
+gem 'jwt'
+gem 'simple_command'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

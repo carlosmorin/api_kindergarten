@@ -7,5 +7,7 @@ Rails.application.routes.draw do
       get :activity_logs
     end
     resources :assistants
+
+    post 'authenticate', to: 'authentication#authenticate'
   end
 end
